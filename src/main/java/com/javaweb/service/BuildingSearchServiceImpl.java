@@ -1,13 +1,15 @@
 package com.javaweb.service;
 
 import java.util.ArrayList;
+
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import com.javaweb.entity.BuildingSearchEntity;
-import com.javaweb.model.BuildingSearchRequestDTO;
 import com.javaweb.model.BuildingSearchResponseDTO;
 import com.javaweb.repository.BuildingSearchRepository;
 
@@ -17,9 +19,10 @@ public class BuildingSearchServiceImpl implements BuildingSearchService{
 	@Autowired
 	private BuildingSearchRepository buildingSearchRepository;
 	@Override
-	public List<BuildingSearchResponseDTO> searchBuilding(BuildingSearchRequestDTO building) {
+	public List<BuildingSearchResponseDTO> searchBuilding(@RequestParam Map<String, Object> params,
+			                                              @RequestParam List<String> typeRent) {
 		List<BuildingSearchResponseDTO> result = new ArrayList<>();
-		List<BuildingSearchEntity> buildingSearchEntities = buildingSearchRepository.searchBuilding(building);
+		List<BuildingSearchEntity> buildingSearchEntities = buildingSearchRepository.searchBuilding(params, typeRent);
 		
 		for(BuildingSearchEntity item : buildingSearchEntities) {
 			BuildingSearchResponseDTO tmp = new BuildingSearchResponseDTO();

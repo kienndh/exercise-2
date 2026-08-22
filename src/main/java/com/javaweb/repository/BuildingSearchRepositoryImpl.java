@@ -1,7 +1,6 @@
 package com.javaweb.repository;
 
 import java.sql.Connection;
-
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -12,19 +11,20 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.stereotype.Repository;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import com.javaweb.entity.BuildingSearchEntity;
-import com.javaweb.model.BuildingSearchRequestDTO;
 
 @Repository
-public class BuildingSearchRepositoryImpl implements BuildingSearchRepository{
+public class BuildingSearchRepositoryImpl implements BuildingSearchRepository {
 	
 	private static String url = "jdbc:mysql://localhost:3306/estatebasic?autoReconnect=true&useSSL=false";
-    private static String username = "root";
-    private static String password = "123456";
+	private static String username = "root";
+	private static String password = "123456";
 
 	@Override
-	public List<BuildingSearchEntity> searchBuilding(BuildingSearchRequestDTO building) {
+	public List<BuildingSearchEntity> searchBuilding(@RequestParam Map<String, Object> params,
+													 @RequestParam List<String> typeRent) {
 		StringBuilder sql = new StringBuilder("select distinct b.id, b.name, d.name as district, b.ward, b.street, b.numberofbasement, b.managername, b.managerphonenumber, b.floorarea, \r\n"
 				+ "ra.value as rentarea, b.rentprice, b.servicefee, b.brokeragefee\r\n"
 				+ "from building as b\r\n"
@@ -34,104 +34,104 @@ public class BuildingSearchRepositoryImpl implements BuildingSearchRepository{
 				+ "left join buildingrenttype as brt on brt.buildingid = b.id\r\n"
 				+ "left join renttype as rt on rt.id = brt.renttypeid\r\n"
 				+ "where 1 = 1 ");
-		if(building.getName() != null && building.getName() != "") {
-			sql.append("and b.name like '%" + building.getName() + "%' ");
+		
+		if (params.get("name") != null && !params.get("name").toString().isEmpty()) {
+			sql.append("and b.name like '%" + params.get("name") + "%' ");
 		}
-		if(building.getFloorArea() != null) {
-			sql.append("and b.floorarea = " + building.getFloorArea() + " ");
+		if (params.get("floorArea") != null && !params.get("floorArea").toString().isEmpty()) {
+			sql.append("and b.floorarea = " + params.get("floorArea") + " ");
 		}
-		if(building.getDistrictId() != null) {
-			sql.append("and b.districtid = " + building.getDistrictId() + " ");
+		if (params.get("districtId") != null && !params.get("districtId").toString().isEmpty()) {
+			sql.append("and b.districtid = " + params.get("districtId") + " ");
 		}
-		if(building.getWard() != null && building.getWard() != "") {
-			sql.append("and b.ward like '%" + building.getWard() + "%' ");
+		if (params.get("ward") != null && !params.get("ward").toString().isEmpty()) {
+			sql.append("and b.ward like '%" + params.get("ward") + "%' ");
 		}
-		if(building.getStreet() != null && building.getStreet() != "") {
-			sql.append("and b.street like '%" + building.getStreet() + "%' ");
+		if (params.get("street") != null && !params.get("street").toString().isEmpty()) {
+			sql.append("and b.street like '%" + params.get("street") + "%' ");
 		}
-		if(building.getNumberOfBasement() != null) {
-			sql.append("and b.numberofbasement = " + building.getNumberOfBasement() + " ");
+		if (params.get("numberOfBasement") != null && !params.get("numberOfBasement").toString().isEmpty()) {
+			sql.append("and b.numberofbasement = " + params.get("numberOfBasement") + " ");
 		}
-		if(building.getDirection() != null && building.getDirection() != "") {
-			sql.append("and b.direction like '%" + building.getDirection() + "%' ");
+		if (params.get("direction") != null && !params.get("direction").toString().isEmpty()) {
+			sql.append("and b.direction like '%" + params.get("direction") + "%' ");
 		}
-		if(building.getLevel() != null && building.getLevel() != "") {
-			sql.append("and b.level like '%" + building.getLevel() + "%' ");
+		if (params.get("level") != null && !params.get("level").toString().isEmpty()) {
+			sql.append("and b.level like '%" + params.get("level") + "%' ");
 		}
-		if(building.getAreaForm() != null) {
-			sql.append("and ra.value >= " + building.getAreaForm() + " ");
+		if (params.get("areaFrom") != null && !params.get("areaFrom").toString().isEmpty()) {
+			sql.append("and ra.value >= " + params.get("areaFrom") + " ");
 		}
-		if(building.getAreaTo() != null) {
-			sql.append("and ra.value <= " + building.getAreaTo() + " ");
+		if (params.get("areaTo") != null && !params.get("areaTo").toString().isEmpty()) {
+			sql.append("and ra.value <= " + params.get("areaTo") + " ");
 		}
-		if(building.getRentPriceFrom() != null) {
-			sql.append("and b.rentprice >= " + building.getRentPriceFrom() + " ");
+		if (params.get("rentPriceFrom") != null && !params.get("rentPriceFrom").toString().isEmpty()) {
+			sql.append("and b.rentprice >= " + params.get("rentPriceFrom") + " ");
 		}
-		if(building.getRentPriceTo() != null) {
-			sql.append("and b.rentprice <= " + building.getRentPriceTo() + " ");
+		if (params.get("rentPriceTo") != null && !params.get("rentPriceTo").toString().isEmpty()) {
+			sql.append("and b.rentprice <= " + params.get("rentPriceTo") + " ");
 		}
-		if(building.getManagerName() != null && building.getManagerName() != "") {
-			sql.append("and b.managername like '%" + building.getManagerName() + "%' ");
+		if (params.get("managerName") != null && !params.get("managerName").toString().isEmpty()) {
+			sql.append("and b.managername like '%" + params.get("managerName") + "%' ");
 		}
-		if(building.getManagerPhoneNumber() != null && building.getManagerPhoneNumber() != "") {
-			sql.append("and b.managerphonenumber like '%" + building.getManagerPhoneNumber() + "%' ");
+		if (params.get("managerPhoneNumber") != null && !params.get("managerPhoneNumber").toString().isEmpty()) {
+			sql.append("and b.managerphonenumber like '%" + params.get("managerPhoneNumber") + "%' ");
 		}
-		if(building.getStaffId() != null) {
-			sql.append("and ab.staffid = " + building.getStaffId() + " ");
+		if (params.get("staffId") != null && !params.get("staffId").toString().isEmpty()) {
+			sql.append("and ab.staffid = " + params.get("staffId") + " ");
 		}
-		if(building.getRentType() != null && building.getRentType().size() != 0) {
+		
+		if (typeRent != null && !typeRent.isEmpty()) {
 			String types = "";
-	        for (int i = 0; i < building.getRentType().size(); i++) {
-	            types += "'" + building.getRentType().get(i) + "'" + (i < building.getRentType().size() - 1 ? "," : "");
-	        }
-	        sql.append("and rt.code in(" + types + ") ");
+			for (int i = 0; i < typeRent.size(); i++) {
+				types += "'" + typeRent.get(i) + "'" + (i < typeRent.size() - 1 ? "," : "");
+			}
+			sql.append("and rt.code in(" + types + ") ");
 		}
+		
 		sql.append("\n order by b.id");
 		
 		Map<Integer, BuildingSearchEntity> map = new LinkedHashMap<>();
-		try(Connection conn = DriverManager.getConnection(url, username, password);
-	    		Statement stmt = conn.createStatement();
-	    		ResultSet rs = stmt.executeQuery(sql.toString());){
+		try (Connection conn = DriverManager.getConnection(url, username, password);
+			 Statement stmt = conn.createStatement();
+			 ResultSet rs = stmt.executeQuery(sql.toString());) {
 			
-	    		while(rs.next()) {
-	    			Integer id = rs.getObject("id", Integer.class);
-	    			BuildingSearchEntity buildingSearchEntity = map.get(id);
-	    			if(buildingSearchEntity == null) {
-	    				buildingSearchEntity = new BuildingSearchEntity();
-	    				
-	    				buildingSearchEntity.setName(rs.getString("name"));
-	    				buildingSearchEntity.setDistrict(rs.getString("district"));
-	    				buildingSearchEntity.setWard(rs.getString("ward"));
-	    				buildingSearchEntity.setStreet(rs.getString("street"));
-	    				buildingSearchEntity.setNumberOfBasement(rs.getObject("numberofbasement", Integer.class));
-	    				buildingSearchEntity.setManegerName(rs.getString("managername"));
-	    				buildingSearchEntity.setManegerPhoneNumber(rs.getString("managerphonenumber"));
-	    				buildingSearchEntity.setFloorArea(rs.getObject("floorarea", Integer.class));
-	    				buildingSearchEntity.setRentPrice(rs.getObject("rentprice", Integer.class));
-	    				buildingSearchEntity.setServiceFee(rs.getObject("servicefee", Integer.class));
-	    				buildingSearchEntity.setBrokerageFee(rs.getObject("brokeragefee", Integer.class));
-	    				buildingSearchEntity.setRentArea("");
-	    				map.put(id, buildingSearchEntity);
-	    			}
-	    			String currentRentArea = rs.getString("rentarea");
-	    		    if (currentRentArea != null && !currentRentArea.isEmpty()) {
-	    		        String existing = buildingSearchEntity.getRentArea();
-	    		        if (existing.isEmpty()) {
-	    		            buildingSearchEntity.setRentArea(currentRentArea);
-	    		        } else {
-	    		            buildingSearchEntity.setRentArea(existing + ", " + currentRentArea);
-	    		        }
-	    		    }
-	    		}
-	    		
-	        } 
-	    	
-	    	catch (SQLException e) {
-	            e.printStackTrace();
-	            System.out.println("Connected database failed...");
-	        }
+			while (rs.next()) {
+				Integer id = rs.getObject("id", Integer.class);
+				BuildingSearchEntity buildingSearchEntity = map.get(id);
+				if (buildingSearchEntity == null) {
+					buildingSearchEntity = new BuildingSearchEntity();
+					
+					buildingSearchEntity.setName(rs.getString("name"));
+					buildingSearchEntity.setDistrict(rs.getString("district"));
+					buildingSearchEntity.setWard(rs.getString("ward"));
+					buildingSearchEntity.setStreet(rs.getString("street"));
+					buildingSearchEntity.setNumberOfBasement(rs.getObject("numberofbasement", Integer.class));
+					buildingSearchEntity.setManegerName(rs.getString("managername"));
+					buildingSearchEntity.setManegerPhoneNumber(rs.getString("managerphonenumber"));
+					buildingSearchEntity.setFloorArea(rs.getObject("floorarea", Integer.class));
+					buildingSearchEntity.setRentPrice(rs.getObject("rentprice", Integer.class));
+					buildingSearchEntity.setServiceFee(rs.getObject("servicefee", Integer.class));
+					buildingSearchEntity.setBrokerageFee(rs.getObject("brokeragefee", Integer.class));
+					buildingSearchEntity.setRentArea("");
+					
+					map.put(id, buildingSearchEntity);
+				}
+				String currentRentArea = rs.getString("rentarea");
+				if (currentRentArea != null && !currentRentArea.isEmpty()) {
+					String existing = buildingSearchEntity.getRentArea();
+					if (existing.isEmpty()) {
+						buildingSearchEntity.setRentArea(currentRentArea);
+					} else {
+						buildingSearchEntity.setRentArea(existing + ", " + currentRentArea);
+					}
+				}
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+			System.out.println("Connected database failed...");
+		}
 		
 		return new ArrayList<>(map.values());
 	}
-
 }
